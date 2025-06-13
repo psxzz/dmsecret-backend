@@ -8,7 +8,7 @@ services:
       - "3333:3333"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dict_dojo.rule=Host(`ghosty_link.algostack.ru`)"
+      - "traefik.http.routers.dict_dojo.rule=Host(`beghostylink.algostack.ru`)"
       - "traefik.http.routers.dict_dojo.entrypoints=websecure"
       - "traefik.http.services.dict_dojo.loadbalancer.server.port=3333"
       - "traefik.http.routers.dict_dojo.tls=true"
