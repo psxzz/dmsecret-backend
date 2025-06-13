@@ -1,0 +1,21 @@
+services:
+  dict_dojo:
+    image: "adanil/ghosty_link:latest"
+    container_name: "ghosty_link"
+    volumes:
+      - ./config.yaml:/go/config.yaml
+    ports:
+      - "3333:3333"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dict_dojo.rule=Host(`ghosty_link.algostack.ru`)"
+      - "traefik.http.routers.dict_dojo.entrypoints=websecure"
+      - "traefik.http.services.dict_dojo.loadbalancer.server.port=3333"
+      - "traefik.http.routers.dict_dojo.tls=true"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true
