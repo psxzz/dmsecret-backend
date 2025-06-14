@@ -1,0 +1,31 @@
+openapi: 3.1.0
+info:
+  title: GhostyLink (Public API)
+  description: GhostyLink public API specification
+  version: 1.0.0
+servers:
+  - description: The local server.
+    url: http://localhost:3333/api/v1
+paths:
+  /healthcheck:
+    get:
+      summary: Check
+      description: Check
+      responses:
+        '200':
+          description: Alive
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AliveResponse'
+
+components:
+  schemas:
+    AliveResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: alive
+      required:
+        - text
