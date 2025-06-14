@@ -1,13 +1,14 @@
 package server
 
 import (
-	"GhostyLink/api/public"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/psxzz/dmsecret-backend/api/public"
 )
 
-type Server struct {
-}
+type Server struct{}
 
 func NewServer() *Server {
 	s := &Server{}

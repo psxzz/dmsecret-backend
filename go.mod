@@ -1,4 +1,4 @@
-module GhostyLink
+module github.com/psxzz/dmsecret-backend
 
 go 1.24.2
 
