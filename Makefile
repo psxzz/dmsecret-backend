@@ -5,6 +5,23 @@ DOCKER_USERNAME = adanil
 APPLICATION_NAME = ghosty_link
 GIT_HASH ?= $(shell git log --format="%h" -n 1)
 
+PROJECT_PATH = $(CURDIR)
+BINDIR = $(PROJECT_PATH)/bin
+
+GOLANGCI = $(BINDIR)/golangci-lint
+
+.PHONY: install-lint
+install-lint:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s v2.1.6
+
+.PHONY: lint
+lint: install-lint
+	$(GOLANGCI) run --config=$(PROJECT_PATH)/.golangci.yml -v $(PROJECT_PATH)/...
+
+.PHONY: fmt
+fmt: install-lint
+	$(GOLANGCI) fmt -v $(PROJECT_PATH)/...
+	go fmt ./...
 
 ## tidy: tidy modfiles and format .go files
 .PHONY: tidy

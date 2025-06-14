@@ -1,12 +1,14 @@
 package main
 
 import (
-	"GhostyLink/api/public"
-	"GhostyLink/internal/config"
-	"GhostyLink/internal/server"
 	"context"
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/gin-gonic/gin"
+
+	"github.com/psxzz/dmsecret-backend/api/public"
+	"github.com/psxzz/dmsecret-backend/internal/config"
+	"github.com/psxzz/dmsecret-backend/internal/server"
 )
 
 const defaultPort = ":3333"
@@ -28,5 +30,5 @@ func main() {
 	public.RegisterHandlers(rg, srv)
 
 	log.Fatal(r.Run(defaultPort))
-	//log.Fatal(r.RunTLS(defaultPort, "localhost.crt", "localhost.key")) // for local development
+	// log.Fatal(r.RunTLS(defaultPort, "localhost.crt", "localhost.key")) // for local development
 }

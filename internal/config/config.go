@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -28,7 +29,7 @@ func Create() (*Config, error) {
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to read config: %w", err)
 	}
 	return cfg, nil
 }
