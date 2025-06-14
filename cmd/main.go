@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"GhostyLink/api/public"
@@ -27,6 +27,6 @@ func main() {
 
 	public.RegisterHandlers(rg, srv)
 
-	//log.Fatal(r.Run(defaultPort))
-	log.Fatal(r.RunTLS(defaultPort, "localhost.crt", "localhost.key")) // for local development
+	log.Fatal(r.Run(defaultPort))
+	//log.Fatal(r.RunTLS(defaultPort, "localhost.crt", "localhost.key")) // for local development
 }

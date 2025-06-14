@@ -1,4 +1,4 @@
-FROM golang:1.23
+FROM golang:1.24
 
 COPY --chmod=755 bin/ghosty_link .
 
