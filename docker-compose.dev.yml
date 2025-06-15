@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: "dmsecret-postgres-local"
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dmsecret
+      PGDATA: /var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+
+  valkey:
+    image: valkey/valkey:8
+    container_name: "dmsecret-valkey-local"
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+#      - ./valkey.conf:/etc/valkey/valkey.conf
+      - valkey:/data
+
+volumes:
+  postgres:
+  valkey:
