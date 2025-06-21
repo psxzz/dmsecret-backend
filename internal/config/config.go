@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	PG string `yaml:"pg_conn_string" mapstructure:"pg_conn_string"`
+	PGConnString     string `yaml:"pg_conn_string" mapstructure:"pg_conn_string"`
+	ValkeyConnString string `yaml:"valkey_conn_string" mapstructure:"valkey_conn_string"`
 }
 
 var (
