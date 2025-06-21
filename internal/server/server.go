@@ -8,6 +8,9 @@ import (
 	"github.com/psxzz/dmsecret-backend/api/public"
 )
 
+//go:generate go tool oapi-codegen -config ../../api/public/cfg.yaml ../../api/public/api.yaml
+var _ public.ServerInterface = (*Server)(nil)
+
 type Server struct{}
 
 func NewServer() *Server {
