@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,10 +12,18 @@ import (
 //go:generate go tool oapi-codegen -config ../../api/public/cfg.yaml ../../api/public/api.yaml
 var _ public.ServerInterface = (*Server)(nil)
 
-type Server struct{}
+type Repository interface {
+	CreateSecret(ctx context.Context, payload string) (string, error)
+}
 
-func NewServer() *Server {
-	s := &Server{}
+type Server struct {
+	repo Repository
+}
+
+func NewServer(repo Repository) *Server {
+	s := &Server{
+		repo: repo,
+	}
 	return s
 }
 

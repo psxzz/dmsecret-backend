@@ -20,7 +20,7 @@ dev-down:
 
 .PHONY: install-lint
 install-lint:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s v2.1.6
+	test -f $(GOLANGCI) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s v2.1.6
 
 .PHONY: lint
 lint: install-lint

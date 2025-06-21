@@ -1,4 +1,4 @@
-package server
+package middlewares
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 )
 
 //nolint:lll
-func CORSMiddleware() gin.HandlerFunc {
+func WithCORSCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173") // "https://ghostylink.algostack.ru" "http://localhost:5173"
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
