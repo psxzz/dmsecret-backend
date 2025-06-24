@@ -9,10 +9,10 @@ import (
 	"github.com/psxzz/dmsecret-backend/api/public"
 	"github.com/psxzz/dmsecret-backend/internal/config"
 	"github.com/psxzz/dmsecret-backend/internal/database/valkey"
-	"github.com/psxzz/dmsecret-backend/internal/repository"
+	"github.com/psxzz/dmsecret-backend/internal/repository/secrets"
 	"github.com/psxzz/dmsecret-backend/internal/server"
 	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
-	"github.com/psxzz/dmsecret-backend/internal/storage/key_value"
+	"github.com/psxzz/dmsecret-backend/internal/service"
 )
 
 const defaultPort = ":3333"
@@ -26,12 +26,12 @@ func main() {
 		panic(err)
 	}
 
-	keyValueDB, err := valkey.New(cfg)
+	keyValueDB, err := valkey.New(cfg.ValkeyConnString)
 	if err != nil {
 		panic(err)
 	}
 
-	// postgresDB, err := postgres.New(cfg)
+	// postgresDB, err := postgres.New(ctx, cfg.PGConnString)
 	// if err != nil {
 	// 	panic(err)
 	// }
@@ -45,9 +45,9 @@ func main() {
 		gin.Recovery(),
 	)
 
-	kvStorage := key_value.New(keyValueDB)
+	secretsRepository := secrets.New(keyValueDB)
 
-	repo := repository.New(kvStorage)
+	repo := service.New(secretsRepository)
 
 	srv := server.NewServer(repo)
 

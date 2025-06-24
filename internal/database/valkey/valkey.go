@@ -5,16 +5,14 @@ import (
 	"fmt"
 
 	"github.com/valkey-io/valkey-go"
-
-	"github.com/psxzz/dmsecret-backend/internal/config"
 )
 
 type valkeyDB struct {
 	client valkey.Client
 }
 
-func New(cfg *config.Config) (*valkeyDB, error) {
-	options, err := valkey.ParseURL(cfg.ValkeyConnString)
+func New(connString string) (*valkeyDB, error) {
+	options, err := valkey.ParseURL(connString)
 	if err != nil {
 		return nil, fmt.Errorf("couldn't parse connection string: %w", err)
 	}

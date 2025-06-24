@@ -1,4 +1,4 @@
-package key_value
+package secrets
 
 import (
 	"context"
@@ -11,15 +11,15 @@ type KeyValueClient interface {
 	SetEX(ctx context.Context, key string, value string, ttl int) error
 }
 
-type kvStorage struct {
+type secretsRepository struct {
 	client KeyValueClient
 }
 
-func New(client KeyValueClient) *kvStorage {
-	return &kvStorage{client: client}
+func New(client KeyValueClient) *secretsRepository {
+	return &secretsRepository{client: client}
 }
 
-func (kv *kvStorage) CreateSecret(ctx context.Context, secretID uuid.UUID, payload string, ttl int) error {
+func (kv *secretsRepository) CreateSecret(ctx context.Context, secretID uuid.UUID, payload string, ttl int) error {
 	secretKey := secretKeyPrefix + secretID.String()
 
 	err := kv.client.SetEX(ctx, secretKey, payload, ttl)

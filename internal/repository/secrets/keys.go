@@ -1,3 +1,3 @@
-package key_value
+package secrets
 
 const secretKeyPrefix = "sec1:"

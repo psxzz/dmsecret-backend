@@ -16,7 +16,7 @@ func (s *Server) PostSecrets(c *gin.Context) {
 		return
 	}
 
-	secretID, err := s.repo.CreateSecret(c.Request.Context(), body.Payload)
+	secretID, err := s.svc.CreateSecret(c.Request.Context(), body.Payload)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}

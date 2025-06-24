@@ -12,17 +12,17 @@ import (
 //go:generate go tool oapi-codegen -config ../../api/public/cfg.yaml ../../api/public/api.yaml
 var _ public.ServerInterface = (*Server)(nil)
 
-type Repository interface {
+type Service interface {
 	CreateSecret(ctx context.Context, payload string) (string, error)
 }
 
 type Server struct {
-	repo Repository
+	svc Service
 }
 
-func NewServer(repo Repository) *Server {
+func NewServer(svc Service) *Server {
 	s := &Server{
-		repo: repo,
+		svc: svc,
 	}
 	return s
 }

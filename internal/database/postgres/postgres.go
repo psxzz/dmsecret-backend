@@ -5,21 +5,19 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-
-	"github.com/psxzz/dmsecret-backend/internal/config"
 )
 
 type postgres struct {
 	conn *pgx.Conn
 }
 
-func New(cfg *config.Config) (*postgres, error) {
-	conn, err := pgx.Connect(context.Background(), cfg.PGConnString)
+func New(ctx context.Context, connString string) (*postgres, error) {
+	conn, err := pgx.Connect(ctx, connString)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to postgres: %w", err)
 	}
 
-	if err := conn.Ping(context.Background()); err != nil {
+	if err := conn.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("failed to ping postgres: %w", err)
 	}
 
