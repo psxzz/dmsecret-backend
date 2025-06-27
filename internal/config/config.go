@@ -10,6 +10,7 @@ import (
 type Config struct {
 	PGConnString     string `yaml:"pg_conn_string" mapstructure:"pg_conn_string"`
 	ValkeyConnString string `yaml:"valkey_conn_string" mapstructure:"valkey_conn_string"`
+	OAPIPath         string `yaml:"oapi_path" mapstructure:"oapi_path"`
 }
 
 var (

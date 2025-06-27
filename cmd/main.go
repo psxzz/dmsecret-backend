@@ -40,7 +40,7 @@ func main() {
 	r := gin.New()
 	r.Use(
 		middlewares.WithCORSCheck(),
-		middlewares.WithOAPIRequestValidation("./api/public/api.yaml"),
+		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
 		gin.Logger(),
 		gin.Recovery(),
 	)
