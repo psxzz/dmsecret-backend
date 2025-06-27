@@ -4,8 +4,8 @@ info:
   description: GhostyLink public API specification
   version: 1.0.0
 servers:
-  - description: The local server.
-    url: https://localhost:3333/api/v1
+  - description: API version 1.0
+    url: /api/v1
 paths:
   /healthcheck:
     get:
