@@ -13,11 +13,34 @@ type AliveResponse struct {
 	Text string `json:"text"`
 }
 
+// SecretsIn defines model for SecretsIn.
+type SecretsIn struct {
+	// Payload Secret payload
+	Payload string `json:"payload"`
+}
+
+// SecretsOut defines model for SecretsOut.
+type SecretsOut struct {
+	// SecretID Secret ID
+	SecretID string `json:"secretID"`
+}
+
+// ValidationError defines model for ValidationError.
+type ValidationError struct {
+	Error string `json:"error"`
+}
+
+// PostSecretsJSONRequestBody defines body for PostSecrets for application/json ContentType.
+type PostSecretsJSONRequestBody = SecretsIn
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Check
 	// (GET /healthcheck)
 	GetHealthcheck(c *gin.Context)
+	// Create secret
+	// (POST /secrets)
+	PostSecrets(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -40,6 +63,19 @@ func (siw *ServerInterfaceWrapper) GetHealthcheck(c *gin.Context) {
 	}
 
 	siw.Handler.GetHealthcheck(c)
+}
+
+// PostSecrets operation middleware
+func (siw *ServerInterfaceWrapper) PostSecrets(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.PostSecrets(c)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -70,4 +106,5 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/healthcheck", wrapper.GetHealthcheck)
+	router.POST(options.BaseURL+"/secrets", wrapper.PostSecrets)
 }

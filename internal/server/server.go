@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -8,10 +9,21 @@ import (
 	"github.com/psxzz/dmsecret-backend/api/public"
 )
 
-type Server struct{}
+//go:generate go tool oapi-codegen -config ../../api/public/cfg.yaml ../../api/public/api.yaml
+var _ public.ServerInterface = (*Server)(nil)
 
-func NewServer() *Server {
-	s := &Server{}
+type Service interface {
+	CreateSecret(ctx context.Context, payload string) (string, error)
+}
+
+type Server struct {
+	svc Service
+}
+
+func NewServer(svc Service) *Server {
+	s := &Server{
+		svc: svc,
+	}
 	return s
 }
 

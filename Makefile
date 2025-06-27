@@ -10,9 +10,17 @@ BINDIR = $(PROJECT_PATH)/bin
 
 GOLANGCI = $(BINDIR)/golangci-lint
 
+.PHONY: dev-up
+dev-up:
+	docker compose --file ./docker-compose.dev.yml up --detach
+
+.PHONY: dev-down
+dev-down:
+	docker compose --file ./docker-compose.dev.yml down
+
 .PHONY: install-lint
 install-lint:
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s v2.1.6
+	test -f $(GOLANGCI) || curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s v2.1.6
 
 .PHONY: lint
 lint: install-lint
