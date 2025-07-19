@@ -8,7 +8,6 @@ import (
 
 	"github.com/psxzz/dmsecret-backend/api/public"
 	"github.com/psxzz/dmsecret-backend/internal/config"
-	"github.com/psxzz/dmsecret-backend/internal/database/valkey"
 	"github.com/psxzz/dmsecret-backend/internal/repository/secrets"
 	"github.com/psxzz/dmsecret-backend/internal/server"
 	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
@@ -26,11 +25,6 @@ func main() {
 		panic(err)
 	}
 
-	keyValueDB, err := valkey.New(cfg.ValkeyConnString)
-	if err != nil {
-		panic(err)
-	}
-
 	r := gin.New()
 	r.Use(
 		gin.Recovery(),
@@ -39,7 +33,10 @@ func main() {
 		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
 	)
 
-	secretsRepository := secrets.New(keyValueDB)
+	secretsRepository, err := secrets.New(cfg.ValkeyConnString)
+	if err != nil {
+		panic(err)
+	}
 
 	svc := service.New(secretsRepository)
 
