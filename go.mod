@@ -3,6 +3,7 @@ module github.com/psxzz/dmsecret-backend
 go 1.24.2
 
 require (
+	github.com/avast/retry-go/v4 v4.6.1
 	github.com/gin-gonic/gin v1.10.1
 	github.com/google/uuid v1.6.0
 	github.com/oapi-codegen/gin-middleware v1.0.2

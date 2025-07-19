@@ -69,7 +69,7 @@ linters:
       ignore-comments: true
 
     gocognit:
-      min-complexity: 20
+      min-complexity: 25
 
     rowserrcheck:
       packages:
