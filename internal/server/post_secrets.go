@@ -21,5 +21,5 @@ func (s *Server) PostSecrets(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	c.JSON(http.StatusOK, public.SecretsOut{SecretID: secretID})
+	c.JSON(http.StatusOK, public.PostSecretsOut{SecretID: secretID})
 }
