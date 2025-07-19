@@ -6,8 +6,11 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+
 	"github.com/psxzz/dmsecret-backend/internal/database/valkey"
 )
+
+var ErrNotFound = errors.New("secret not found")
 
 type KeyValueClient interface {
 	Get(ctx context.Context, key string) (string, error)
@@ -26,7 +29,6 @@ func (r *secretsRepository) Create(ctx context.Context, secretID uuid.UUID, payl
 	secretKey := getSecretKey(secretID)
 
 	err := r.kv.SetEX(ctx, secretKey, payload, ttl)
-
 	if err != nil {
 		return fmt.Errorf("could not set ex: %w", err)
 	}
@@ -34,17 +36,17 @@ func (r *secretsRepository) Create(ctx context.Context, secretID uuid.UUID, payl
 	return nil
 }
 
-func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (*string, error) {
+func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (string, error) {
 	secretKey := getSecretKey(secretID)
 
 	payload, err := r.kv.Get(ctx, secretKey)
 	if err != nil {
 		if errors.Is(err, valkey.ErrNotFound) {
-			return nil, nil
+			return "", ErrNotFound
 		}
 
-		return nil, fmt.Errorf("could not get: %w", err)
+		return "", fmt.Errorf("could not get by id: %w", err)
 	}
 
-	return &payload, nil
+	return payload, nil
 }

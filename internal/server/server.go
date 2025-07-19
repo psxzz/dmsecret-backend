@@ -15,7 +15,7 @@ var _ public.ServerInterface = (*Server)(nil)
 
 type Service interface {
 	CreateSecret(ctx context.Context, payload string) (string, error)
-	GetSecretByID(ctx context.Context, id uuid.UUID) (*string, error)
+	GetSecretByID(ctx context.Context, id uuid.UUID) (string, error)
 }
 
 type Server struct {

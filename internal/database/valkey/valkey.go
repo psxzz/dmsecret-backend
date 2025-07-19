@@ -54,17 +54,17 @@ func (v *valkeyDB) Get(ctx context.Context, key string) (string, error) {
 
 	resp := client.Do(ctx, client.B().Watch().Key(key).Build())
 	if err := resp.Error(); err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't watch key: %w", err)
 	}
 
 	resp = client.Do(ctx, client.B().Hgetall().Key(key).Build())
 	if err := resp.Error(); err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't get key: %w", err)
 	}
 
 	hash, err := resp.AsStrMap()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't get hash from response: %w", err)
 	}
 
 	if len(hash) == 0 {
@@ -79,23 +79,23 @@ func (v *valkeyDB) Get(ctx context.Context, key string) (string, error) {
 	)
 	for _, r := range resps {
 		if err := r.Error(); err != nil {
-			return "", err
+			return "", fmt.Errorf("couldn't do pipelined: %w", err)
 		}
 	}
 
 	resp = client.Do(ctx, client.B().Hgetall().Key(key).Build())
 	if err := resp.Error(); err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't get key: %w", err)
 	}
 
 	hash, err = resp.AsStrMap()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't get hash from response: %w", err)
 	}
 
 	seenCount, err := strconv.Atoi(hash["seen_count"])
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("couldn't convert seen counter: %w", err)
 	}
 
 	if seenCount < 0 {
