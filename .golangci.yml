@@ -29,6 +29,7 @@ linters:
     - nilnil
     - noctx
     - nolintlint
+    - perfsprint
     - prealloc
     - predeclared
     - reassign
@@ -42,6 +43,7 @@ linters:
     - unparam
     - unused
     - usestdlibvars
+    - usetesting
     - wastedassign
     - whitespace
     - wrapcheck

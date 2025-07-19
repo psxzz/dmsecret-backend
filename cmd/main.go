@@ -31,25 +31,19 @@ func main() {
 		panic(err)
 	}
 
-	// postgresDB, err := postgres.New(ctx, cfg.PGConnString)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// _ = postgresDB
-
 	r := gin.New()
 	r.Use(
+		gin.Recovery(),
+		gin.Logger(),
 		middlewares.WithCORSCheck(),
 		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
-		gin.Logger(),
-		gin.Recovery(),
 	)
 
 	secretsRepository := secrets.New(keyValueDB)
 
-	repo := service.New(secretsRepository)
+	svc := service.New(secretsRepository)
 
-	srv := server.NewServer(repo)
+	srv := server.NewServer(svc)
 
 	rg := r.Group("/api/v1")
 	public.RegisterHandlers(rg, srv)

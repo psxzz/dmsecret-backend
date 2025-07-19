@@ -7,11 +7,13 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/oapi-codegen/gin-middleware v1.0.2
+	github.com/oapi-codegen/runtime v1.1.1
 	github.com/spf13/viper v1.20.1
 	github.com/valkey-io/valkey-go v1.0.61
 )
 
 require (
+	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
