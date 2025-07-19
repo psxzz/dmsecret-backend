@@ -17,20 +17,20 @@ type AliveResponse struct {
 	Text string `json:"text"`
 }
 
-// GetSecretsOut defines model for GetSecretsOut.
-type GetSecretsOut struct {
+// GetSecretOut defines model for GetSecretOut.
+type GetSecretOut struct {
 	// Payload Secret payload
 	Payload string `json:"payload"`
 }
 
-// PostSecretsIn defines model for PostSecretsIn.
-type PostSecretsIn struct {
+// PostSecretIn defines model for PostSecretIn.
+type PostSecretIn struct {
 	// Payload Secret payload
 	Payload string `json:"payload"`
 }
 
-// PostSecretsOut defines model for PostSecretsOut.
-type PostSecretsOut struct {
+// PostSecretOut defines model for PostSecretOut.
+type PostSecretOut struct {
 	// SecretID Secret ID
 	SecretID string `json:"secretID"`
 }
@@ -40,13 +40,13 @@ type ValidationError struct {
 	Error string `json:"error"`
 }
 
-// GetSecretsParams defines parameters for GetSecrets.
-type GetSecretsParams struct {
+// GetSecretParams defines parameters for GetSecret.
+type GetSecretParams struct {
 	SecretID string `form:"secretID" json:"secretID"`
 }
 
-// PostSecretsJSONRequestBody defines body for PostSecrets for application/json ContentType.
-type PostSecretsJSONRequestBody = PostSecretsIn
+// PostSecretJSONRequestBody defines body for PostSecret for application/json ContentType.
+type PostSecretJSONRequestBody = PostSecretIn
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -54,11 +54,11 @@ type ServerInterface interface {
 	// (GET /healthcheck)
 	GetHealthcheck(c *gin.Context)
 	// Get secret
-	// (GET /secrets)
-	GetSecrets(c *gin.Context, params GetSecretsParams)
+	// (GET /secret)
+	GetSecret(c *gin.Context, params GetSecretParams)
 	// Create secret
-	// (POST /secrets)
-	PostSecrets(c *gin.Context)
+	// (POST /secret)
+	PostSecret(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -83,13 +83,13 @@ func (siw *ServerInterfaceWrapper) GetHealthcheck(c *gin.Context) {
 	siw.Handler.GetHealthcheck(c)
 }
 
-// GetSecrets operation middleware
-func (siw *ServerInterfaceWrapper) GetSecrets(c *gin.Context) {
+// GetSecret operation middleware
+func (siw *ServerInterfaceWrapper) GetSecret(c *gin.Context) {
 
 	var err error
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params GetSecretsParams
+	var params GetSecretParams
 
 	// ------------- Required query parameter "secretID" -------------
 
@@ -113,11 +113,11 @@ func (siw *ServerInterfaceWrapper) GetSecrets(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetSecrets(c, params)
+	siw.Handler.GetSecret(c, params)
 }
 
-// PostSecrets operation middleware
-func (siw *ServerInterfaceWrapper) PostSecrets(c *gin.Context) {
+// PostSecret operation middleware
+func (siw *ServerInterfaceWrapper) PostSecret(c *gin.Context) {
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -126,7 +126,7 @@ func (siw *ServerInterfaceWrapper) PostSecrets(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.PostSecrets(c)
+	siw.Handler.PostSecret(c)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -157,6 +157,6 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/healthcheck", wrapper.GetHealthcheck)
-	router.GET(options.BaseURL+"/secrets", wrapper.GetSecrets)
-	router.POST(options.BaseURL+"/secrets", wrapper.PostSecrets)
+	router.GET(options.BaseURL+"/secret", wrapper.GetSecret)
+	router.POST(options.BaseURL+"/secret", wrapper.PostSecret)
 }

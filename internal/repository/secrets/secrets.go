@@ -57,17 +57,17 @@ func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (st
 		return "", fmt.Errorf("couldn't watch key: %w", err)
 	}
 
-	resp = client.Do(ctx, client.B().Hgetall().Key(key).Build())
+	resp = client.Do(ctx, client.B().Exists().Key(key).Build())
 	if err := resp.Error(); err != nil {
-		return "", fmt.Errorf("couldn't get key: %w", err)
+		return "", fmt.Errorf("couldn't check key existance: %w", err)
 	}
 
-	hash, err := resp.AsStrMap()
+	exists, err := resp.AsBool()
 	if err != nil {
-		return "", fmt.Errorf("couldn't get hash from response: %w", err)
+		return "", fmt.Errorf("couldn't get bool from response: %w", err)
 	}
 
-	if len(hash) == 0 {
+	if !exists {
 		return "", ErrNotFound
 	}
 
@@ -88,7 +88,7 @@ func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (st
 		return "", fmt.Errorf("couldn't get key: %w", err)
 	}
 
-	hash, err = resp.AsStrMap()
+	hash, err := resp.AsStrMap()
 	if err != nil {
 		return "", fmt.Errorf("couldn't get hash from response: %w", err)
 	}

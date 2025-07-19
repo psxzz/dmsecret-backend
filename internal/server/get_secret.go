@@ -11,7 +11,7 @@ import (
 	"github.com/psxzz/dmsecret-backend/internal/service"
 )
 
-func (s *Server) GetSecrets(c *gin.Context, params public.GetSecretsParams) {
+func (s *Server) GetSecret(c *gin.Context, params public.GetSecretParams) {
 	id, err := uuid.Parse(params.SecretID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, public.ValidationError{Error: err.Error()})
@@ -29,5 +29,5 @@ func (s *Server) GetSecrets(c *gin.Context, params public.GetSecretsParams) {
 		return
 	}
 
-	c.JSON(http.StatusOK, public.GetSecretsOut{Payload: payload})
+	c.JSON(http.StatusOK, public.GetSecretOut{Payload: payload})
 }
