@@ -4,7 +4,11 @@
 package public
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 )
 
 // AliveResponse defines model for AliveResponse.
@@ -13,14 +17,20 @@ type AliveResponse struct {
 	Text string `json:"text"`
 }
 
-// SecretsIn defines model for SecretsIn.
-type SecretsIn struct {
+// GetSecretOut defines model for GetSecretOut.
+type GetSecretOut struct {
 	// Payload Secret payload
 	Payload string `json:"payload"`
 }
 
-// SecretsOut defines model for SecretsOut.
-type SecretsOut struct {
+// PostSecretIn defines model for PostSecretIn.
+type PostSecretIn struct {
+	// Payload Secret payload
+	Payload string `json:"payload"`
+}
+
+// PostSecretOut defines model for PostSecretOut.
+type PostSecretOut struct {
 	// SecretID Secret ID
 	SecretID string `json:"secretID"`
 }
@@ -30,17 +40,25 @@ type ValidationError struct {
 	Error string `json:"error"`
 }
 
-// PostSecretsJSONRequestBody defines body for PostSecrets for application/json ContentType.
-type PostSecretsJSONRequestBody = SecretsIn
+// GetSecretParams defines parameters for GetSecret.
+type GetSecretParams struct {
+	SecretID string `form:"secretID" json:"secretID"`
+}
+
+// PostSecretJSONRequestBody defines body for PostSecret for application/json ContentType.
+type PostSecretJSONRequestBody = PostSecretIn
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Check
 	// (GET /healthcheck)
 	GetHealthcheck(c *gin.Context)
+	// Get secret
+	// (GET /secret)
+	GetSecret(c *gin.Context, params GetSecretParams)
 	// Create secret
-	// (POST /secrets)
-	PostSecrets(c *gin.Context)
+	// (POST /secret)
+	PostSecret(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -65,8 +83,28 @@ func (siw *ServerInterfaceWrapper) GetHealthcheck(c *gin.Context) {
 	siw.Handler.GetHealthcheck(c)
 }
 
-// PostSecrets operation middleware
-func (siw *ServerInterfaceWrapper) PostSecrets(c *gin.Context) {
+// GetSecret operation middleware
+func (siw *ServerInterfaceWrapper) GetSecret(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetSecretParams
+
+	// ------------- Required query parameter "secretID" -------------
+
+	if paramValue := c.Query("secretID"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Query argument secretID is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "secretID", c.Request.URL.Query(), &params.SecretID)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter secretID: %w", err), http.StatusBadRequest)
+		return
+	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -75,7 +113,20 @@ func (siw *ServerInterfaceWrapper) PostSecrets(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.PostSecrets(c)
+	siw.Handler.GetSecret(c, params)
+}
+
+// PostSecret operation middleware
+func (siw *ServerInterfaceWrapper) PostSecret(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.PostSecret(c)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -106,5 +157,6 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/healthcheck", wrapper.GetHealthcheck)
-	router.POST(options.BaseURL+"/secrets", wrapper.PostSecrets)
+	router.GET(options.BaseURL+"/secret", wrapper.GetSecret)
+	router.POST(options.BaseURL+"/secret", wrapper.PostSecret)
 }

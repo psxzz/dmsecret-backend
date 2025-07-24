@@ -8,7 +8,6 @@ import (
 
 	"github.com/psxzz/dmsecret-backend/api/public"
 	"github.com/psxzz/dmsecret-backend/internal/config"
-	"github.com/psxzz/dmsecret-backend/internal/database/valkey"
 	"github.com/psxzz/dmsecret-backend/internal/repository/secrets"
 	"github.com/psxzz/dmsecret-backend/internal/server"
 	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
@@ -26,30 +25,22 @@ func main() {
 		panic(err)
 	}
 
-	keyValueDB, err := valkey.New(cfg.ValkeyConnString)
+	r := gin.New()
+	r.Use(
+		gin.Recovery(),
+		gin.Logger(),
+		middlewares.WithCORSCheck(),
+		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
+	)
+
+	secretsRepository, err := secrets.New(cfg.ValkeyConnString)
 	if err != nil {
 		panic(err)
 	}
 
-	// postgresDB, err := postgres.New(ctx, cfg.PGConnString)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// _ = postgresDB
+	svc := service.New(secretsRepository)
 
-	r := gin.New()
-	r.Use(
-		middlewares.WithCORSCheck(),
-		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
-		gin.Logger(),
-		gin.Recovery(),
-	)
-
-	secretsRepository := secrets.New(keyValueDB)
-
-	repo := service.New(secretsRepository)
-
-	srv := server.NewServer(repo)
+	srv := server.NewServer(svc)
 
 	rg := r.Group("/api/v1")
 	public.RegisterHandlers(rg, srv)

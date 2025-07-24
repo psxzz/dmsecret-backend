@@ -18,7 +18,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AliveResponse'
-  /secrets:
+  /secret:
+    get:
+      summary: Get secret
+      description: Get secret by id
+      parameters:
+        - name: secretID
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSecretOut'
     post:
       summary: Create secret
       description: Create secret for given payload
@@ -26,7 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SecretsIn'
+              $ref: '#/components/schemas/PostSecretIn'
       responses:
         '400':
           description: Validation error
@@ -39,7 +55,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretsOut'
+                $ref: '#/components/schemas/PostSecretOut'
 
 components:
   schemas:
@@ -50,7 +66,7 @@ components:
           type: string
       required:
         - error
-    SecretsIn:
+    GetSecretOut:
       type: object
       properties:
         payload:
@@ -58,7 +74,15 @@ components:
           description: Secret payload
       required:
         - payload
-    SecretsOut:
+    PostSecretIn:
+      type: object
+      properties:
+        payload:
+          type: string
+          description: Secret payload
+      required:
+        - payload
+    PostSecretOut:
       type: object
       properties:
         secretID:
