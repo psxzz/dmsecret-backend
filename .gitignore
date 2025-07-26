@@ -34,6 +34,7 @@ go.work.sum
 .idea/
 bin/
 config.yaml
+config.override.yaml
 config_local.yaml
 config_prod.yaml
 localhost.key

@@ -20,7 +20,7 @@ func main() {
 	ctx := context.Background()
 	_ = ctx
 
-	cfg, err := config.Create()
+	cfg, err := config.Overload()
 	if err != nil {
 		panic(err)
 	}
