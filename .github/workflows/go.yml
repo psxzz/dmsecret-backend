@@ -82,4 +82,4 @@ jobs:
       - name: Deploy to VPS
         run: |
           scp docker-compose.yml ${{ vars.VPS_USER }}@${{ vars.VPS_IP }}:/home/adanil/ghosty_link/docker-compose.yml
-          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_IP }} "cd /home/adanil/ghosty_link && docker compose pull && docker compose up -d"
+          ssh ${{ vars.VPS_USER }}@${{ vars.VPS_IP }} "cd /home/adanil/ghosty_link && docker compose pull && CRYPTO_KEY=${{ secrets.CRYPTO_KEY }} docker compose up -d"
