@@ -10,10 +10,15 @@ import (
 func (r *secretsRepository) Create(ctx context.Context, secretID uuid.UUID, payload string, ttl int) error {
 	key := getSecretKey(secretID)
 
+	encryptedPayload, err := r.cryptographer.Encrypt(payload)
+	if err != nil {
+		return fmt.Errorf("could not encrypt payload: %w", err)
+	}
+
 	resps := r.kv.DoMulti(
 		ctx,
 		r.kv.B().Hset().Key(key).FieldValue().
-			FieldValue(hashFieldPayload, payload).
+			FieldValue(hashFieldPayload, encryptedPayload).
 			FieldValue(hashFieldSeenCount, "1").Build(),
 		r.kv.B().Expire().Key(key).Seconds(int64(ttl)).Build(),
 	)

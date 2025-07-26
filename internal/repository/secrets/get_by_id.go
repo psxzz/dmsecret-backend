@@ -9,6 +9,7 @@ import (
 
 	"github.com/avast/retry-go/v4"
 	"github.com/google/uuid"
+	"github.com/valkey-io/valkey-go"
 )
 
 func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (string, error) {
@@ -44,7 +45,13 @@ func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (st
 			client.B().Exec().Build(),
 		)
 		for _, r := range resps {
-			if err := r.Error(); err != nil {
+			err := r.Error()
+
+			if valkey.IsValkeyNil(err) {
+				return "", ErrLocked
+			}
+
+			if err != nil {
 				return "", fmt.Errorf("couldn't do multi pipeline: %w", err)
 			}
 		}
@@ -71,7 +78,12 @@ func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (st
 			}
 		}
 
-		return hash[hashFieldPayload], nil
+		payload, err := r.cryptographer.Decrypt(hash[hashFieldPayload])
+		if err != nil {
+			return "", fmt.Errorf("couldn't decrypt payload: %w", err)
+		}
+
+		return payload, nil
 	}
 
 	payload, err := retry.DoWithData(
@@ -80,7 +92,7 @@ func (r *secretsRepository) GetByID(ctx context.Context, secretID uuid.UUID) (st
 		retry.Attempts(5),
 		retry.Delay(10*time.Millisecond),
 		retry.RetryIf(func(err error) bool {
-			return !errors.Is(err, ErrNotFound)
+			return errors.Is(err, ErrLocked)
 		}),
 	)
 	if err != nil {
