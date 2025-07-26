@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -15,7 +16,10 @@ type encrypter struct {
 }
 
 func New(key string) (*encrypter, error) {
-	keyBytes := []byte(key)
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding key: %w", err)
+	}
 
 	if !isKeyValid(keyBytes) {
 		return nil, errors.New("invalid crypto key")
