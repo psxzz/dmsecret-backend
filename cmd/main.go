@@ -46,5 +46,5 @@ func main() {
 	public.RegisterHandlers(rg, srv)
 
 	log.Fatal(r.Run(defaultPort))
-	// log.Fatal(r.RunTLS(defaultPort, "localhost.crt", "localhost.key")) // for local development
+	//log.Fatal(r.RunTLS(defaultPort, "ssl-cert-snakeoil.pem", "ssl-cert-snakeoil.key")) // for local development
 }

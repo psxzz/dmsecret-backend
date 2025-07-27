@@ -38,3 +38,6 @@ config_local.yaml
 config_prod.yaml
 localhost.key
 localhost.crt
+ssl-cert-snakeoil.pem
+ssl-cert-snakeoil.key
+api.yaml
