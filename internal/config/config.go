@@ -7,10 +7,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	configName         = "config"
+	configOverrideName = "config.override"
+)
+
 type Config struct {
-	PGConnString     string `yaml:"pg_conn_string" mapstructure:"pg_conn_string"`
-	ValkeyConnString string `yaml:"valkey_conn_string" mapstructure:"valkey_conn_string"`
-	OAPIPath         string `yaml:"oapi_path" mapstructure:"oapi_path"`
+	ValkeyConnString string `mapstructure:"valkey_conn_string"`
+	OAPIPath         string `mapstructure:"oapi_path"`
+	CryptoKey        string `mapstructure:"crypto_key"`
 }
 
 var (
@@ -18,20 +23,51 @@ var (
 	createOnce sync.Once
 )
 
-func Create() (*Config, error) {
+func createConfig() error {
 	var err error
+
 	createOnce.Do(func() {
 		viper.AddConfigPath(".")
-		viper.SetConfigName("config")
+		viper.SetConfigName(configName)
 
 		err = viper.ReadInConfig()
+		if err != nil {
+			return
+		}
+
+		err = viper.BindEnv("crypto_key", "CRYPTO_KEY")
+		if err != nil {
+			return
+		}
 
 		cfg = &Config{}
 		err = viper.Unmarshal(cfg)
 	})
-
 	if err != nil {
-		return nil, fmt.Errorf("unable to read config: %w", err)
+		return fmt.Errorf("unable to read config: %w", err)
 	}
+
+	return nil
+}
+
+func Overload() (*Config, error) {
+	err := createConfig()
+	if err != nil {
+		return nil, fmt.Errorf("unable to create: %w", err)
+	}
+
+	viper.AddConfigPath(".")
+	viper.SetConfigName(configOverrideName)
+
+	err = viper.MergeInConfig()
+	if err != nil {
+		return nil, fmt.Errorf("unable to merge: %w", err)
+	}
+
+	err = viper.Unmarshal(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("unable to unmarshal: %w", err)
+	}
+
 	return cfg, nil
 }
