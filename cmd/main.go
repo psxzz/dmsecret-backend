@@ -58,6 +58,6 @@ func run() error {
 	public.RegisterHandlers(rg, srv)
 
 	err = r.Run(defaultPort)
-	// err = r.RunTLS(defaultPort, "localhost.crt", "localhost.key") // for local development
+	// err = r.RunTLS(r.RunTLS(defaultPort, "ssl-cert-snakeoil.pem", "ssl-cert-snakeoil.key")) // for local development
 	return fmt.Errorf("server error: %w", err)
 }
