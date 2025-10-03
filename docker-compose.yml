@@ -8,7 +8,7 @@ services:
       - "3333:3333"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ghosty_link.rule=Host(`be.ghostylink.algostack.ru`)"
+      - "traefik.http.routers.ghosty_link.rule=Host(`beghostylink.algostack.ru`)"
       - "traefik.http.routers.ghosty_link.entrypoints=websecure"
       - "traefik.http.services.ghosty_link.loadbalancer.server.port=3333"
       - "traefik.http.routers.ghosty_link.tls=true"
