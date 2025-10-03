@@ -26,14 +26,12 @@ func main() {
 	}
 
 	r := gin.New()
-	r.Use(middlewares.WithCORSCheck())
-
-	// r.Use(
-	//	gin.Recovery(),
-	//	gin.Logger(),
-	//	middlewares.WithCORSCheck(),
-	//	middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
-	// )
+	r.Use(
+		gin.Recovery(),
+		gin.Logger(),
+		middlewares.WithCORSCheck(),
+		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
+	)
 
 	secretsRepository, err := secrets.New(cfg.ValkeyConnString)
 	if err != nil {
