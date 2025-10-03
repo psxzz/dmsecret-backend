@@ -1,5 +1,5 @@
 services:
-  dict_dojo:
+  be_ghosty_link:
     image: "adanil/ghosty_link:latest"
     container_name: "ghosty_link"
     volumes:

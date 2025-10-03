@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,6 @@ import (
 	"github.com/psxzz/dmsecret-backend/internal/config"
 	"github.com/psxzz/dmsecret-backend/internal/repository/secrets"
 	"github.com/psxzz/dmsecret-backend/internal/server"
-	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
 	"github.com/psxzz/dmsecret-backend/internal/service"
 )
 
@@ -26,12 +26,13 @@ func main() {
 	}
 
 	r := gin.New()
-	r.Use(
-		gin.Recovery(),
-		gin.Logger(),
-		middlewares.WithCORSCheck(),
-		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
-	)
+	r.Use(middlewares.WithCORSCheck())
+	//r.Use(
+	//	gin.Recovery(),
+	//	gin.Logger(),
+	//	middlewares.WithCORSCheck(),
+	//	middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
+	//)
 
 	secretsRepository, err := secrets.New(cfg.ValkeyConnString)
 	if err != nil {
