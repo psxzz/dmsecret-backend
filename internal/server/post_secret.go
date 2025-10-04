@@ -19,6 +19,7 @@ func (s *Server) PostSecret(c *gin.Context) {
 	secretID, err := s.svc.CreateSecret(c.Request.Context(), body.Payload)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, public.PostSecretOut{SecretID: secretID})

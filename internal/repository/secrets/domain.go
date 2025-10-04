@@ -7,4 +7,7 @@ const (
 	hashFieldSeenCount = "seenCount"
 )
 
-var ErrNotFound = errors.New("secret not found")
+var (
+	ErrLocked   = errors.New("secret locked")
+	ErrNotFound = errors.New("secret not found")
+)

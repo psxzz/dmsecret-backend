@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/psxzz/dmsecret-backend/api/public"
 	"github.com/psxzz/dmsecret-backend/internal/config"
+	"github.com/psxzz/dmsecret-backend/internal/cryptographer"
 	"github.com/psxzz/dmsecret-backend/internal/repository/secrets"
 	"github.com/psxzz/dmsecret-backend/internal/server"
 	"github.com/psxzz/dmsecret-backend/internal/server/middlewares"
@@ -17,10 +19,14 @@ import (
 const defaultPort = ":3333"
 
 func main() {
+	log.Fatal(run())
+}
+
+func run() error {
 	ctx := context.Background()
 	_ = ctx
 
-	cfg, err := config.Create()
+	cfg, err := config.Overload()
 	if err != nil {
 		panic(err)
 	}
@@ -33,10 +39,16 @@ func main() {
 		middlewares.WithOAPIRequestValidation(cfg.OAPIPath),
 	)
 
-	secretsRepository, err := secrets.New(cfg.ValkeyConnString)
+	crypt, err := cryptographer.New(cfg.CryptoKey)
 	if err != nil {
 		panic(err)
 	}
+
+	secretsRepository, err := secrets.New(cfg.ValkeyConnString, crypt)
+	if err != nil {
+		panic(err)
+	}
+	defer secretsRepository.Close()
 
 	svc := service.New(secretsRepository)
 
@@ -45,6 +57,7 @@ func main() {
 	rg := r.Group("/api/v1")
 	public.RegisterHandlers(rg, srv)
 
-	log.Fatal(r.Run(defaultPort))
-	// log.Fatal(r.RunTLS(defaultPort, "ssl-cert-snakeoil.pem", "ssl-cert-snakeoil.key")) // for local development
+	err = r.Run(defaultPort)
+	// err = r.RunTLS(r.RunTLS(defaultPort, "ssl-cert-snakeoil.pem", "ssl-cert-snakeoil.key")) // for local development
+	return fmt.Errorf("server error: %w", err)
 }

@@ -14,6 +14,8 @@ services:
       - "traefik.http.routers.ghosty_link.tls=true"
     networks:
       - proxy
+    environment:
+      CRYPTO_KEY: ${CRYPTO_KEY}
 
 networks:
   proxy:
