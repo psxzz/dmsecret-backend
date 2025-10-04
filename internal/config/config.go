@@ -1,7 +1,10 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -56,12 +59,19 @@ func Overload() (*Config, error) {
 		return nil, fmt.Errorf("unable to create: %w", err)
 	}
 
-	viper.AddConfigPath(".")
-	viper.SetConfigName(configOverrideName)
+	_, err = os.Stat(filepath.Base(filepath.Join(".", configOverrideName+".yaml")))
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return nil, fmt.Errorf("unable to check config override existance: %w", err)
+	}
 
-	err = viper.MergeInConfig()
-	if err != nil {
-		return nil, fmt.Errorf("unable to merge: %w", err)
+	if err == nil {
+		viper.AddConfigPath(".")
+		viper.SetConfigName(configOverrideName)
+
+		err = viper.MergeInConfig()
+		if err != nil {
+			return nil, fmt.Errorf("unable to merge: %w", err)
+		}
 	}
 
 	err = viper.Unmarshal(cfg)
