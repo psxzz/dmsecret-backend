@@ -61,7 +61,7 @@ func Overload() (*Config, error) {
 
 	_, err = os.Stat(filepath.Base(filepath.Join(".", configOverrideName+".yaml")))
 	if err != nil && !errors.Is(err, os.ErrNotExist) {
-		return nil, fmt.Errorf("unable to check config override existance: %w", err)
+		return nil, fmt.Errorf("unable to check config override existence: %w", err)
 	}
 
 	if err == nil {
