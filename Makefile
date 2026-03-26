@@ -60,4 +60,4 @@ release-docker: build-docker
 
 .PHONY: generate-oapi
 generate-oapi:
-	oapi-codegen -config api/public/cfg.yaml api/public/api.yaml
+	go tool oapi-codegen -config api/public/cfg.yaml api/public/api.yaml
