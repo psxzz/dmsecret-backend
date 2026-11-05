@@ -1,6 +1,6 @@
 module github.com/psxzz/dmsecret-backend
 
-go 1.24.2
+go 1.27.1
 
 require (
 	github.com/avast/retry-go/v4 v4.6.1
