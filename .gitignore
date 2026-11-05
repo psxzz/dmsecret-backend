@@ -27,6 +27,18 @@ go.work.sum
 # env file
 .env
 
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+.TemporaryItems/
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
 # Editor/IDE
 # .idea/
 # .vscode/
