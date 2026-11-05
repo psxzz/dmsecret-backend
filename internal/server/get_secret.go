@@ -21,11 +21,11 @@ func (s *Server) GetSecret(c *gin.Context, params public.GetSecretParams) {
 	payload, err := s.svc.GetSecretByID(c.Request.Context(), id)
 	if err != nil {
 		if errors.Is(err, service.ErrSecretNotFound) {
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "secret not found"})
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{errorResponseKey: "secret not found"})
 			return
 		}
 
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{errorResponseKey: err.Error()})
 		return
 	}
 

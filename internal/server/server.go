@@ -10,6 +10,8 @@ import (
 	"github.com/psxzz/dmsecret-backend/api/public"
 )
 
+const errorResponseKey = "error"
+
 var _ public.ServerInterface = (*Server)(nil)
 
 type Service interface {
